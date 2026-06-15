@@ -1,0 +1,1265 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Street Spanish</title>
+<style>
+:root {
+  --primary: #0066cc;
+  --primary-focus: #0071e3;
+  --primary-dark: #2997ff;
+  --canvas: #ffffff;
+  --parchment: #f5f5f7;
+  --pearl: #fafafc;
+  --tile-1: #272729;
+  --tile-2: #2a2a2c;
+  --tile-3: #252527;
+  --black: #000000;
+  --ink: #1d1d1f;
+  --on-dark: #ffffff;
+  --muted: #cccccc;
+  --ink-80: #333333;
+  --ink-48: #7a7a7a;
+  --divider: #f0f0f0;
+  --hairline: #e0e0e0;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{
+  font-family:system-ui,-apple-system,BlinkMacSystemFont,'Inter',sans-serif;
+  background:var(--parchment);
+  color:var(--ink);
+  -webkit-font-smoothing:antialiased;
+  overflow-x:hidden;
+}
+
+/* NAV */
+.nav{
+  position:fixed;top:0;left:0;right:0;
+  height:44px;background:var(--black);
+  display:flex;align-items:center;justify-content:space-between;
+  padding:0 20px;z-index:200;
+}
+.nav-logo{
+  font-size:15px;font-weight:600;color:#fff;
+  letter-spacing:-0.12px;cursor:pointer;border:none;
+  background:none;padding:0;
+}
+.nav-back{
+  font-size:13px;color:var(--primary-dark);
+  border:none;background:none;cursor:pointer;
+  display:none;align-items:center;gap:4px;padding:0;
+}
+.nav-back.visible{display:flex}
+.nav-title{
+  font-size:12px;color:var(--muted);
+  letter-spacing:-0.12px;
+  position:absolute;left:50%;transform:translateX(-50%);
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+  max-width:180px;text-align:center;
+}
+
+/* APP */
+.app{padding-top:44px;min-height:100vh}
+.page{display:none;min-height:calc(100vh - 44px)}
+.page.active{display:block}
+
+/* ── HOME ── */
+.hero{
+  background:var(--canvas);
+  padding:64px 24px 56px;
+  text-align:center;
+}
+.hero-eyebrow{
+  font-size:28px;font-weight:300;color:var(--primary);
+  letter-spacing:0.196px;line-height:1.14;
+  margin-bottom:20px;
+}
+.hero h1{
+  font-size:48px;font-weight:600;color:var(--ink);
+  letter-spacing:-0.28px;line-height:1.07;
+  margin-bottom:18px;
+}
+.hero-sub{
+  font-size:17px;font-weight:400;color:var(--ink-80);
+  line-height:1.47;letter-spacing:-0.374px;
+  max-width:480px;margin:0 auto 36px;
+}
+.hero-goals{
+  display:inline-flex;flex-direction:column;gap:8px;
+  text-align:left;margin-bottom:40px;
+}
+.goal-item{
+  font-size:15px;color:var(--ink-80);line-height:1.4;
+  display:flex;align-items:center;gap:10px;
+}
+.goal-dot{
+  width:6px;height:6px;border-radius:50%;
+  background:var(--primary);flex-shrink:0;
+}
+
+.modules-wrap{
+  background:var(--parchment);
+  padding:40px 20px 80px;
+}
+.section-label{
+  font-size:12px;font-weight:600;color:var(--ink-48);
+  letter-spacing:0.5px;text-transform:uppercase;
+  margin-bottom:20px;
+}
+.grid{
+  display:grid;grid-template-columns:1fr;gap:14px;
+}
+.card{
+  background:var(--canvas);
+  border:1px solid var(--hairline);
+  border-radius:18px;padding:22px;
+  cursor:pointer;
+  transition:transform .1s ease;
+  text-align:left;
+}
+.card:active{transform:scale(0.98)}
+.card-icon{font-size:30px;margin-bottom:10px;display:block}
+.card-num{
+  font-size:11px;font-weight:600;color:var(--primary);
+  letter-spacing:-0.12px;margin-bottom:4px;
+}
+.card h3{
+  font-size:17px;font-weight:600;color:var(--ink);
+  letter-spacing:-0.374px;line-height:1.24;margin-bottom:6px;
+}
+.card p{
+  font-size:14px;color:var(--ink-48);
+  line-height:1.43;letter-spacing:-0.224px;
+}
+
+/* ── LESSON HEADER ── */
+.lhdr{
+  background:var(--tile-1);
+  padding:40px 24px 36px;
+  text-align:center;
+}
+.lhdr-eyebrow{
+  font-size:13px;font-weight:600;color:var(--muted);
+  letter-spacing:-0.224px;margin-bottom:10px;
+}
+.lhdr h2{
+  font-size:34px;font-weight:600;color:var(--on-dark);
+  letter-spacing:-0.374px;line-height:1.1;
+}
+
+/* ── CONTENT SECTIONS ── */
+.cs{padding:36px 20px}
+.cs.light{background:var(--canvas)}
+.cs.parch{background:var(--parchment)}
+.cs.dark{background:var(--tile-1);color:var(--on-dark)}
+.cs.dark2{background:var(--tile-2);color:var(--on-dark)}
+.cs h3{
+  font-size:21px;font-weight:600;
+  letter-spacing:-0.374px;line-height:1.19;
+  margin-bottom:18px;
+}
+.cs p.note{
+  font-size:14px;color:var(--ink-48);
+  line-height:1.5;letter-spacing:-0.224px;
+  margin-bottom:18px;
+}
+.cs.dark p.note,.cs.dark2 p.note{color:var(--muted)}
+
+/* Phrase list */
+.phrases{display:flex;flex-direction:column;gap:10px}
+.ph-card{
+  background:var(--parchment);
+  border-radius:14px;padding:14px 40px 14px 18px;
+  cursor:pointer;position:relative;
+}
+.ph-card::after{
+  content:'🔊';
+  position:absolute;top:50%;right:14px;
+  transform:translateY(-50%);
+  font-size:14px;opacity:.28;
+  transition:opacity .15s;
+  pointer-events:none;
+}
+.ph-card:hover::after{opacity:.6}
+.ph-card.speaking{box-shadow:0 0 0 2px var(--primary)}
+.cs.dark .ph-card.speaking,.cs.dark2 .ph-card.speaking{box-shadow:0 0 0 2px var(--primary-dark)}
+.ph-card.speaking::after{
+  opacity:1;
+  animation:tts-wave .65s ease-in-out infinite alternate;
+}
+@keyframes tts-wave{
+  from{opacity:.6;transform:translateY(-50%) scale(1)}
+  to{opacity:1;transform:translateY(-50%) scale(1.25)}
+}
+.cs.dark .ph-card,.cs.dark2 .ph-card{background:rgba(255,255,255,.07)}
+.cs.parch .ph-card{background:var(--canvas)}
+.ph-card .es{
+  font-size:18px;font-weight:600;color:var(--ink);
+  letter-spacing:-0.374px;margin-bottom:3px;
+}
+.cs.dark .ph-card .es,.cs.dark2 .ph-card .es{color:var(--on-dark)}
+.ph-card .ph{
+  font-size:13px;color:var(--primary);
+  letter-spacing:-0.224px;margin-bottom:3px;
+}
+.cs.dark .ph-card .ph,.cs.dark2 .ph-card .ph{color:var(--primary-dark)}
+.ph-card .ja{
+  font-size:13px;color:var(--ink-48);
+  letter-spacing:-0.224px;
+}
+.cs.dark .ph-card .ja,.cs.dark2 .ph-card .ja{color:var(--muted)}
+
+/* Tip box */
+.tip{
+  background:rgba(0,102,204,.07);
+  border-left:3px solid var(--primary);
+  border-radius:8px;padding:14px 16px;
+  margin-top:18px;
+}
+.cs.dark .tip,.cs.dark2 .tip{background:rgba(41,151,255,.1);border-color:var(--primary-dark)}
+.tip-lbl{
+  font-size:11px;font-weight:600;color:var(--primary);
+  letter-spacing:0.5px;text-transform:uppercase;margin-bottom:6px;
+}
+.cs.dark .tip-lbl,.cs.dark2 .tip-lbl{color:var(--primary-dark)}
+.tip p{
+  font-size:14px;line-height:1.5;color:var(--ink);
+}
+.cs.dark .tip p,.cs.dark2 .tip p{color:var(--on-dark)}
+
+/* Alphabet grid */
+.alpha-grid{
+  display:grid;grid-template-columns:repeat(4,1fr);gap:8px;
+}
+.a-card{
+  background:var(--parchment);border-radius:11px;
+  padding:10px 6px;text-align:center;cursor:pointer;
+}
+.a-card.speaking{box-shadow:0 0 0 2px var(--primary)}
+.a-card .lt{
+  font-size:20px;font-weight:600;color:var(--ink);
+  letter-spacing:-0.374px;display:block;
+}
+.a-card .nm{font-size:10px;color:var(--ink-48);margin-top:2px}
+.a-card .snd{font-size:10px;color:var(--primary);margin-top:1px}
+.a-card.special .lt{color:var(--primary)}
+
+/* Pronunciation rules */
+.p-rule{
+  background:var(--parchment);border-radius:14px;
+  padding:14px 18px;margin-bottom:10px;
+}
+.p-rule .pr-ltr{
+  font-size:20px;font-weight:600;color:var(--primary);
+  letter-spacing:-0.374px;margin-bottom:4px;
+}
+.p-rule .pr-txt{
+  font-size:14px;color:var(--ink);line-height:1.5;
+}
+.p-rule .pr-ex{
+  font-size:13px;color:var(--ink-48);
+  margin-top:5px;line-height:1.4;
+}
+
+/* Numbers grid */
+.num-grid{
+  display:grid;grid-template-columns:1fr 1fr;gap:8px;
+}
+.n-card{
+  background:var(--parchment);border-radius:11px;
+  padding:12px 14px;display:flex;align-items:center;gap:10px;
+  cursor:pointer;
+}
+.n-card.speaking{box-shadow:0 0 0 2px var(--primary)}
+.cs.dark .n-card.speaking,.cs.dark2 .n-card.speaking{box-shadow:0 0 0 2px var(--primary-dark)}
+.cs.dark .n-card,.cs.dark2 .n-card{background:rgba(255,255,255,.07)}
+.n-card .num{
+  font-size:24px;font-weight:600;color:var(--primary);
+  min-width:36px;
+}
+.n-card .ni-es{
+  font-size:15px;font-weight:600;color:var(--ink);
+  letter-spacing:-0.374px;
+}
+.cs.dark .n-card .ni-es,.cs.dark2 .n-card .ni-es{color:var(--on-dark)}
+.n-card .ni-ph{font-size:11px;color:var(--ink-48)}
+.cs.dark .n-card .ni-ph,.cs.dark2 .n-card .ni-ph{color:var(--muted)}
+
+/* Vocab table */
+.vtbl{width:100%;border-collapse:collapse}
+.vtbl th{
+  font-size:11px;font-weight:600;color:var(--ink-48);
+  letter-spacing:0.5px;text-transform:uppercase;
+  text-align:left;padding:0 0 10px;
+  border-bottom:1px solid var(--hairline);
+}
+.cs.dark .vtbl th,.cs.dark2 .vtbl th{
+  color:var(--muted);border-color:rgba(255,255,255,.1);
+}
+.vtbl td{
+  padding:10px 0;
+  border-bottom:1px solid var(--hairline);
+  vertical-align:top;font-size:14px;
+}
+.cs.dark .vtbl td,.cs.dark2 .vtbl td{border-color:rgba(255,255,255,.1)}
+.vtbl td:first-child{
+  font-size:15px;font-weight:600;color:var(--ink);
+  letter-spacing:-0.374px;width:38%;padding-right:14px;
+}
+.cs.dark .vtbl td:first-child,.cs.dark2 .vtbl td:first-child{color:var(--on-dark)}
+.vtbl td:nth-child(2){color:var(--primary)}
+.cs.dark .vtbl td:nth-child(2),.cs.dark2 .vtbl td:nth-child(2){color:var(--primary-dark)}
+.vtbl td:nth-child(3){color:var(--ink-48)}
+.cs.dark .vtbl td:nth-child(3),.cs.dark2 .vtbl td:nth-child(3){color:var(--muted)}
+.vtbl tbody tr{cursor:pointer}
+.vtbl tbody tr.speaking td:first-child{color:var(--primary)}
+.cs.dark .vtbl tbody tr.speaking td:first-child,.cs.dark2 .vtbl tbody tr.speaking td:first-child{color:var(--primary-dark)}
+
+/* Dialogue scenario */
+.scenario{
+  background:var(--tile-1);border-radius:18px;
+  padding:20px;color:var(--on-dark);
+}
+.cs.dark .scenario,.cs.dark2 .scenario{background:rgba(255,255,255,.07)}
+.scn-lbl{
+  font-size:11px;font-weight:600;color:var(--primary-dark);
+  letter-spacing:0.5px;text-transform:uppercase;margin-bottom:16px;
+}
+.dl{margin-bottom:14px}
+.dl:last-child{margin-bottom:0}
+.dl-spk{
+  font-size:10px;font-weight:600;color:var(--muted);
+  text-transform:uppercase;letter-spacing:0.5px;margin-bottom:3px;
+}
+.dl-es{
+  font-size:15px;font-weight:600;color:var(--on-dark);
+  letter-spacing:-0.374px;
+}
+.dl-ph{font-size:12px;color:var(--primary-dark);margin-top:2px}
+.dl-ja{font-size:12px;color:var(--muted);margin-top:2px}
+.dl{cursor:pointer;position:relative;border-radius:8px;padding-right:26px}
+.dl::after{
+  content:'🔊';
+  position:absolute;top:2px;right:0;
+  font-size:12px;opacity:.22;
+  transition:opacity .15s;pointer-events:none;
+}
+.dl:hover::after{opacity:.55}
+.dl.speaking .dl-es{color:var(--primary-dark)}
+.dl.speaking::after{opacity:1;animation:tts-dl .65s ease-in-out infinite alternate}
+@keyframes tts-dl{from{opacity:.6;transform:scale(1)}to{opacity:1;transform:scale(1.2)}}
+
+/* Lesson nav */
+.lnav{
+  background:var(--parchment);
+  padding:28px 20px;
+  display:flex;justify-content:center;gap:12px;flex-wrap:wrap;
+  border-top:1px solid var(--hairline);
+}
+.btn-p{
+  background:var(--primary);color:#fff;
+  font-size:16px;font-weight:400;letter-spacing:-0.374px;
+  padding:10px 22px;border-radius:9999px;
+  border:none;cursor:pointer;
+  transition:transform .1s ease;
+}
+.btn-p:active{transform:scale(0.95)}
+.btn-s{
+  background:transparent;color:var(--primary);
+  font-size:16px;font-weight:400;letter-spacing:-0.374px;
+  padding:9px 20px;border-radius:9999px;
+  border:1px solid var(--primary);
+  cursor:pointer;transition:transform .1s ease;
+}
+.btn-s:active{transform:scale(0.95)}
+
+/* Footer */
+.footer{
+  background:var(--parchment);padding:36px 24px;
+  text-align:center;border-top:1px solid var(--hairline);
+}
+.footer p{
+  font-size:12px;color:var(--ink-48);line-height:1.6;
+}
+
+/* RESPONSIVE */
+@media(min-width:480px){
+  .alpha-grid{grid-template-columns:repeat(5,1fr)}
+}
+@media(min-width:640px){
+  .grid{grid-template-columns:1fr 1fr}
+  .hero h1{font-size:56px}
+}
+@media(min-width:1024px){
+  .grid{grid-template-columns:repeat(3,1fr);max-width:960px;margin:0 auto}
+  .cs{padding:56px max(calc(50% - 480px),40px)}
+  .lhdr{padding:64px max(calc(50% - 480px),40px) 56px;text-align:left}
+  .hero{padding:80px 24px 72px}
+  .modules-wrap{padding:56px max(calc(50% - 480px),40px) 96px}
+  .lnav{padding:36px 40px}
+}
+@media(max-width:380px){
+  .hero h1{font-size:36px}
+  .lhdr h2{font-size:28px}
+  .alpha-grid{grid-template-columns:repeat(3,1fr)}
+  .num-grid{grid-template-columns:1fr}
+}
+</style>
+</head>
+<body>
+
+<nav class="nav">
+  <button class="nav-back" id="nav-back" onclick="showPage('home')">← 一覧</button>
+  <button class="nav-logo" onclick="showPage('home')">Street Spanish</button>
+  <span class="nav-title" id="nav-title">7レッスン</span>
+</nav>
+
+<div class="app">
+
+<!-- ═══════════════ HOME ═══════════════ -->
+<div class="page active" id="page-home">
+  <div class="hero">
+    <h1>Street Spanish</h1>
+    <div class="hero-eyebrow">Hola, World.</div>
+    <p class="hero-sub">旅先でひとり立ちするための7つのレッスン。レストラン、スーパー、道案内、そしてバルまで。</p>
+    <div class="hero-goals">
+      <div class="goal-item"><span class="goal-dot"></span>レストランで注文・会計</div>
+      <div class="goal-item"><span class="goal-dot"></span>スーパーで一人で買い物</div>
+      <div class="goal-item"><span class="goal-dot"></span>街で道を聞く</div>
+      <div class="goal-item"><span class="goal-dot"></span>バルでお酒を楽しむ</div>
+    </div>
+  </div>
+
+  <div class="modules-wrap">
+    <div class="section-label">レッスン一覧</div>
+    <div class="grid">
+      <div class="card" onclick="showPage('l1')">
+        <span class="card-icon">🔤</span>
+        <div class="card-num">レッスン 1</div>
+        <h3>アルファベットと発音</h3>
+        <p>27文字の読み方と発音の基本ルール</p>
+      </div>
+      <div class="card" onclick="showPage('l2')">
+        <span class="card-icon">🔢</span>
+        <div class="card-num">レッスン 2</div>
+        <h3>数字</h3>
+        <p>0から1000まで。値段の確認に必須</p>
+      </div>
+      <div class="card" onclick="showPage('l3')">
+        <span class="card-icon">👋</span>
+        <div class="card-num">レッスン 3</div>
+        <h3>挨拶と基本フレーズ</h3>
+        <p>出会い・別れ・お礼・困ったとき</p>
+      </div>
+      <div class="card" onclick="showPage('l4')">
+        <span class="card-icon">🍽️</span>
+        <div class="card-num">レッスン 4</div>
+        <h3>レストランで食事</h3>
+        <p>入店から注文・会計まで完全攻略</p>
+      </div>
+      <div class="card" onclick="showPage('l5')">
+        <span class="card-icon">🛒</span>
+        <div class="card-num">レッスン 5</div>
+        <h3>スーパーで買い物</h3>
+        <p>商品を探して、量を伝えて、支払い</p>
+      </div>
+      <div class="card" onclick="showPage('l6')">
+        <span class="card-icon">🗺️</span>
+        <div class="card-num">レッスン 6</div>
+        <h3>道を聞く</h3>
+        <p>場所の尋ね方と方向の理解</p>
+      </div>
+      <div class="card" onclick="showPage('l7')">
+        <span class="card-icon">🍺</span>
+        <div class="card-num">レッスン 7</div>
+        <h3>バルで一杯</h3>
+        <p>ドリンク・タパス・乾杯の文化</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="footer">
+    <p>スペイン語は世界で約5億人が話す言語です。<br>毎日少しずつ、楽しく学びましょう。¡Buena suerte!</p>
+  </div>
+</div>
+
+<!-- ═══════════════ LESSON 1: アルファベット ═══════════════ -->
+<div class="page" id="page-l1">
+  <div class="lhdr">
+    <div class="lhdr-eyebrow">レッスン 1</div>
+    <h2>アルファベットと発音</h2>
+  </div>
+
+  <div class="cs light">
+    <h3>スペイン語の27文字</h3>
+    <p class="note">英語の26文字＋「ñ」が特徴。ローマ字読みに近いので日本人には馴染みやすい言語です。</p>
+    <div class="alpha-grid">
+      <div class="a-card"><span class="lt">A</span><span class="nm">a</span><span class="snd">ア</span></div>
+      <div class="a-card"><span class="lt">B</span><span class="nm">be</span><span class="snd">ベ</span></div>
+      <div class="a-card"><span class="lt">C</span><span class="nm">ce</span><span class="snd">セ</span></div>
+      <div class="a-card"><span class="lt">D</span><span class="nm">de</span><span class="snd">デ</span></div>
+      <div class="a-card"><span class="lt">E</span><span class="nm">e</span><span class="snd">エ</span></div>
+      <div class="a-card"><span class="lt">F</span><span class="nm">efe</span><span class="snd">エフェ</span></div>
+      <div class="a-card"><span class="lt">G</span><span class="nm">ge</span><span class="snd">ヘ/ガ</span></div>
+      <div class="a-card"><span class="lt">H</span><span class="nm">hache</span><span class="snd">無音</span></div>
+      <div class="a-card"><span class="lt">I</span><span class="nm">i</span><span class="snd">イ</span></div>
+      <div class="a-card"><span class="lt">J</span><span class="nm">jota</span><span class="snd">ハ行</span></div>
+      <div class="a-card"><span class="lt">K</span><span class="nm">ka</span><span class="snd">カ</span></div>
+      <div class="a-card"><span class="lt">L</span><span class="nm">ele</span><span class="snd">エレ</span></div>
+      <div class="a-card"><span class="lt">M</span><span class="nm">eme</span><span class="snd">エメ</span></div>
+      <div class="a-card"><span class="lt">N</span><span class="nm">ene</span><span class="snd">エネ</span></div>
+      <div class="a-card special"><span class="lt">Ñ</span><span class="nm">eñe</span><span class="snd">ニャ行</span></div>
+      <div class="a-card"><span class="lt">O</span><span class="nm">o</span><span class="snd">オ</span></div>
+      <div class="a-card"><span class="lt">P</span><span class="nm">pe</span><span class="snd">ペ</span></div>
+      <div class="a-card"><span class="lt">Q</span><span class="nm">cu</span><span class="snd">ク</span></div>
+      <div class="a-card"><span class="lt">R</span><span class="nm">erre</span><span class="snd">エレ</span></div>
+      <div class="a-card"><span class="lt">S</span><span class="nm">ese</span><span class="snd">エセ</span></div>
+      <div class="a-card"><span class="lt">T</span><span class="nm">te</span><span class="snd">テ</span></div>
+      <div class="a-card"><span class="lt">U</span><span class="nm">u</span><span class="snd">ウ</span></div>
+      <div class="a-card"><span class="lt">V</span><span class="nm">uve</span><span class="snd">ウベ</span></div>
+      <div class="a-card"><span class="lt">W</span><span class="nm">doble u</span><span class="snd">ドブレ</span></div>
+      <div class="a-card"><span class="lt">X</span><span class="nm">equis</span><span class="snd">エキス</span></div>
+      <div class="a-card"><span class="lt">Y</span><span class="nm">ye</span><span class="snd">イェ</span></div>
+      <div class="a-card"><span class="lt">Z</span><span class="nm">zeta</span><span class="snd">セタ</span></div>
+    </div>
+  </div>
+
+  <div class="cs dark">
+    <h3>母音は5つ。常に同じ音</h3>
+    <p class="note">英語と違い、スペイン語の母音はどこに来ても同じ音。これが発音を覚えやすくする理由です。</p>
+    <div class="phrases">
+      <div class="ph-card"><div class="es">A → ア</div><div class="ph">例: casa (カサ) = 家</div></div>
+      <div class="ph-card"><div class="es">E → エ</div><div class="ph">例: mesa (メサ) = テーブル</div></div>
+      <div class="ph-card"><div class="es">I → イ</div><div class="ph">例: vino (ビノ) = ワイン</div></div>
+      <div class="ph-card"><div class="es">O → オ</div><div class="ph">例: hotel (オテル) = ホテル</div></div>
+      <div class="ph-card"><div class="es">U → ウ</div><div class="ph">例: uva (ウバ) = ぶどう</div></div>
+    </div>
+  </div>
+
+  <div class="cs parch">
+    <h3>特別な発音ルール8つ</h3>
+    <div class="p-rule">
+      <div class="pr-ltr">H — 常に無音</div>
+      <div class="pr-txt">「h」は読みません。完全に無音です。</div>
+      <div class="pr-ex">hola → オラ（こんにちは） / hotel → オテル</div>
+    </div>
+    <div class="p-rule">
+      <div class="pr-ltr">J — ハ行（喉の奥から）</div>
+      <div class="pr-txt">英語の「h」より強く、喉の奥から出す音です。</div>
+      <div class="pr-ex">jamón → ハモン（ハム） / Juan → フアン</div>
+    </div>
+    <div class="p-rule">
+      <div class="pr-ltr">G — 2種類の音</div>
+      <div class="pr-txt">e・i の前では「ヘ行」(=J と同じ音)、それ以外は「ガ行」。</div>
+      <div class="pr-ex">general → ヘネラル / gato → ガト（猫）</div>
+    </div>
+    <div class="p-rule">
+      <div class="pr-ltr">C — 2種類の音</div>
+      <div class="pr-txt">e・i の前では「ス」、それ以外は「カ行」。</div>
+      <div class="pr-ex">cerveza → セルベサ（ビール） / café → カフェ</div>
+    </div>
+    <div class="p-rule">
+      <div class="pr-ltr">LL — ヤ行 / ジャ行</div>
+      <div class="pr-txt">「ll」は「ヤ行」または「ジャ行」に近い音。</div>
+      <div class="pr-ex">calle → カジェ（通り） / llama → ジャマ</div>
+    </div>
+    <div class="p-rule">
+      <div class="pr-ltr">Ñ — ニャ行</div>
+      <div class="pr-txt">スペイン語固有の文字。「ニャ行」の音。</div>
+      <div class="pr-ex">España → エスパーニャ / señor → セニョル</div>
+    </div>
+    <div class="p-rule">
+      <div class="pr-ltr">RR — 巻き舌</div>
+      <div class="pr-txt">強い巻き舌音。語頭の「r」も同じく巻き舌。</div>
+      <div class="pr-ex">arroz → アロス（米） / carro → カロ（車）</div>
+    </div>
+    <div class="p-rule">
+      <div class="pr-ltr">V = B（同じ音）</div>
+      <div class="pr-txt">「v」と「b」はどちらも「バ行」の音で区別しません。</div>
+      <div class="pr-ex">vino = bino → ビノ（ワイン）</div>
+    </div>
+    <div class="tip">
+      <div class="tip-lbl">アクセント記号について</div>
+      <p>á é í ó ú のように記号がついた母音はその音節を<strong>強く</strong>読みます。例：café（カ<strong>フェ</strong>）、jamón（ハ<strong>モン</strong>）</p>
+    </div>
+  </div>
+
+  <div class="lnav">
+    <button class="btn-s" onclick="showPage('home')">← 一覧</button>
+    <button class="btn-p" onclick="showPage('l2')">次: 数字 →</button>
+  </div>
+</div>
+
+<!-- ═══════════════ LESSON 2: 数字 ═══════════════ -->
+<div class="page" id="page-l2">
+  <div class="lhdr">
+    <div class="lhdr-eyebrow">レッスン 2</div>
+    <h2>数字</h2>
+  </div>
+
+  <div class="cs light">
+    <h3>0 〜 15</h3>
+    <div class="num-grid">
+      <div class="n-card"><span class="num">0</span><div><div class="ni-es">cero</div><div class="ni-ph">セロ</div></div></div>
+      <div class="n-card"><span class="num">1</span><div><div class="ni-es">uno</div><div class="ni-ph">ウノ</div></div></div>
+      <div class="n-card"><span class="num">2</span><div><div class="ni-es">dos</div><div class="ni-ph">ドス</div></div></div>
+      <div class="n-card"><span class="num">3</span><div><div class="ni-es">tres</div><div class="ni-ph">トレス</div></div></div>
+      <div class="n-card"><span class="num">4</span><div><div class="ni-es">cuatro</div><div class="ni-ph">クアトロ</div></div></div>
+      <div class="n-card"><span class="num">5</span><div><div class="ni-es">cinco</div><div class="ni-ph">シンコ</div></div></div>
+      <div class="n-card"><span class="num">6</span><div><div class="ni-es">seis</div><div class="ni-ph">セイス</div></div></div>
+      <div class="n-card"><span class="num">7</span><div><div class="ni-es">siete</div><div class="ni-ph">シエテ</div></div></div>
+      <div class="n-card"><span class="num">8</span><div><div class="ni-es">ocho</div><div class="ni-ph">オチョ</div></div></div>
+      <div class="n-card"><span class="num">9</span><div><div class="ni-es">nueve</div><div class="ni-ph">ヌエベ</div></div></div>
+      <div class="n-card"><span class="num">10</span><div><div class="ni-es">diez</div><div class="ni-ph">ディエス</div></div></div>
+      <div class="n-card"><span class="num">11</span><div><div class="ni-es">once</div><div class="ni-ph">オンセ</div></div></div>
+      <div class="n-card"><span class="num">12</span><div><div class="ni-es">doce</div><div class="ni-ph">ドセ</div></div></div>
+      <div class="n-card"><span class="num">13</span><div><div class="ni-es">trece</div><div class="ni-ph">トレセ</div></div></div>
+      <div class="n-card"><span class="num">14</span><div><div class="ni-es">catorce</div><div class="ni-ph">カトルセ</div></div></div>
+      <div class="n-card"><span class="num">15</span><div><div class="ni-es">quince</div><div class="ni-ph">キンセ</div></div></div>
+    </div>
+  </div>
+
+  <div class="cs dark">
+    <h3>16 〜 29</h3>
+    <div class="tip" style="margin-bottom:16px">
+      <div class="tip-lbl">パターン</div>
+      <p>16〜19は「dieci＋数字」が合体した形。20〜29は「veinti＋数字」。</p>
+    </div>
+    <div class="num-grid">
+      <div class="n-card"><span class="num">16</span><div><div class="ni-es">dieciséis</div><div class="ni-ph">ディエシセイス</div></div></div>
+      <div class="n-card"><span class="num">17</span><div><div class="ni-es">diecisiete</div><div class="ni-ph">ディエシシエテ</div></div></div>
+      <div class="n-card"><span class="num">18</span><div><div class="ni-es">dieciocho</div><div class="ni-ph">ディエシオチョ</div></div></div>
+      <div class="n-card"><span class="num">19</span><div><div class="ni-es">diecinueve</div><div class="ni-ph">ディエシヌエベ</div></div></div>
+      <div class="n-card"><span class="num">20</span><div><div class="ni-es">veinte</div><div class="ni-ph">ベインテ</div></div></div>
+      <div class="n-card"><span class="num">21</span><div><div class="ni-es">veintiuno</div><div class="ni-ph">ベインティウノ</div></div></div>
+      <div class="n-card"><span class="num">22</span><div><div class="ni-es">veintidós</div><div class="ni-ph">ベインティドス</div></div></div>
+      <div class="n-card"><span class="num">25</span><div><div class="ni-es">veinticinco</div><div class="ni-ph">ベインティシンコ</div></div></div>
+    </div>
+  </div>
+
+  <div class="cs parch">
+    <h3>30以上のつくり方</h3>
+    <div class="tip" style="margin-bottom:16px">
+      <div class="tip-lbl">ルール</div>
+      <p>30以上は「十の位 ＋ y（イ） ＋ 一の位」。例: 35 = treinta y cinco</p>
+    </div>
+    <div class="num-grid">
+      <div class="n-card"><span class="num">30</span><div><div class="ni-es">treinta</div><div class="ni-ph">トレインタ</div></div></div>
+      <div class="n-card"><span class="num">40</span><div><div class="ni-es">cuarenta</div><div class="ni-ph">クアレンタ</div></div></div>
+      <div class="n-card"><span class="num">50</span><div><div class="ni-es">cincuenta</div><div class="ni-ph">シンクエンタ</div></div></div>
+      <div class="n-card"><span class="num">60</span><div><div class="ni-es">sesenta</div><div class="ni-ph">セセンタ</div></div></div>
+      <div class="n-card"><span class="num">70</span><div><div class="ni-es">setenta</div><div class="ni-ph">セテンタ</div></div></div>
+      <div class="n-card"><span class="num">80</span><div><div class="ni-es">ochenta</div><div class="ni-ph">オチェンタ</div></div></div>
+      <div class="n-card"><span class="num">90</span><div><div class="ni-es">noventa</div><div class="ni-ph">ノベンタ</div></div></div>
+      <div class="n-card"><span class="num">100</span><div><div class="ni-es">cien</div><div class="ni-ph">シエン</div></div></div>
+      <div class="n-card"><span class="num">200</span><div><div class="ni-es">doscientos</div><div class="ni-ph">ドシエントス</div></div></div>
+      <div class="n-card"><span class="num">500</span><div><div class="ni-es">quinientos</div><div class="ni-ph">キニエントス</div></div></div>
+      <div class="n-card"><span class="num">1000</span><div><div class="ni-es">mil</div><div class="ni-ph">ミル</div></div></div>
+    </div>
+  </div>
+
+  <div class="cs dark">
+    <h3>値段を聞く・答える</h3>
+    <div class="phrases">
+      <div class="ph-card">
+        <div class="es">¿Cuánto cuesta?</div>
+        <div class="ph">クアント クエスタ？</div>
+        <div class="ja">いくらですか？</div>
+      </div>
+      <div class="ph-card">
+        <div class="es">¿Cuánto es?</div>
+        <div class="ph">クアント エス？</div>
+        <div class="ja">いくらですか？（お会計時）</div>
+      </div>
+      <div class="ph-card">
+        <div class="es">Son cinco euros.</div>
+        <div class="ph">ソン シンコ エウロス</div>
+        <div class="ja">5ユーロです。</div>
+      </div>
+      <div class="ph-card">
+        <div class="es">Son doce euros con cincuenta.</div>
+        <div class="ph">ソン ドセ エウロス コン シンクエンタ</div>
+        <div class="ja">12ユーロ50セントです。</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="lnav">
+    <button class="btn-s" onclick="showPage('l1')">← 前へ</button>
+    <button class="btn-p" onclick="showPage('l3')">次: 挨拶 →</button>
+  </div>
+</div>
+
+<!-- ═══════════════ LESSON 3: 挨拶 ═══════════════ -->
+<div class="page" id="page-l3">
+  <div class="lhdr">
+    <div class="lhdr-eyebrow">レッスン 3</div>
+    <h2>挨拶と基本フレーズ</h2>
+  </div>
+
+  <div class="cs light">
+    <h3>時間帯の挨拶</h3>
+    <div class="phrases">
+      <div class="ph-card"><div class="es">Hola</div><div class="ph">オラ</div><div class="ja">こんにちは / やあ（時間帯問わず使える）</div></div>
+      <div class="ph-card"><div class="es">Buenos días</div><div class="ph">ブエノス ディアス</div><div class="ja">おはようございます（午前中）</div></div>
+      <div class="ph-card"><div class="es">Buenas tardes</div><div class="ph">ブエナス タルデス</div><div class="ja">こんにちは（午後〜夕方）</div></div>
+      <div class="ph-card"><div class="es">Buenas noches</div><div class="ph">ブエナス ノチェス</div><div class="ja">こんばんは / おやすみなさい</div></div>
+      <div class="ph-card"><div class="es">Buenas</div><div class="ph">ブエナス</div><div class="ja">どうも（短縮形。日常でよく使う）</div></div>
+    </div>
+  </div>
+
+  <div class="cs dark">
+    <h3>元気？ / お礼 / 謝罪</h3>
+    <div class="phrases">
+      <div class="ph-card"><div class="es">¿Cómo estás?</div><div class="ph">コモ エスタス？</div><div class="ja">元気？（カジュアル）</div></div>
+      <div class="ph-card"><div class="es">Bien, gracias. ¿Y tú?</div><div class="ph">ビエン グラシアス。イ トゥ？</div><div class="ja">元気です、ありがとう。あなたは？</div></div>
+      <div class="ph-card"><div class="es">Gracias / Muchas gracias</div><div class="ph">グラシアス / ムーチャス グラシアス</div><div class="ja">ありがとう / どうもありがとう</div></div>
+      <div class="ph-card"><div class="es">De nada</div><div class="ph">デ ナダ</div><div class="ja">どういたしまして</div></div>
+      <div class="ph-card"><div class="es">Por favor</div><div class="ph">ポル ファボル</div><div class="ja">お願いします</div></div>
+      <div class="ph-card"><div class="es">Perdona / Disculpe</div><div class="ph">ペルドナ / ディスクルペ</div><div class="ja">すみません（呼びかける時）</div></div>
+      <div class="ph-card"><div class="es">Lo siento</div><div class="ph">ロ シエント</div><div class="ja">ごめんなさい（謝罪）</div></div>
+      <div class="ph-card"><div class="es">Sí / No</div><div class="ph">シ / ノ</div><div class="ja">はい / いいえ</div></div>
+    </div>
+  </div>
+
+  <div class="cs parch">
+    <h3>別れの挨拶</h3>
+    <div class="phrases">
+      <div class="ph-card"><div class="es">Adiós</div><div class="ph">アディオス</div><div class="ja">さようなら</div></div>
+      <div class="ph-card"><div class="es">Hasta luego</div><div class="ph">アスタ ルエゴ</div><div class="ja">またね（また後で）</div></div>
+      <div class="ph-card"><div class="es">Hasta mañana</div><div class="ph">アスタ マニャーナ</div><div class="ja">また明日</div></div>
+      <div class="ph-card"><div class="es">Hasta pronto</div><div class="ph">アスタ プロント</div><div class="ja">またすぐ</div></div>
+    </div>
+  </div>
+
+  <div class="cs dark">
+    <h3>困ったときの救急フレーズ</h3>
+    <div class="phrases">
+      <div class="ph-card"><div class="es">No entiendo.</div><div class="ph">ノ エンティエンド</div><div class="ja">わかりません</div></div>
+      <div class="ph-card"><div class="es">No hablo español.</div><div class="ph">ノ アブロ エスパニョル</div><div class="ja">スペイン語が話せません</div></div>
+      <div class="ph-card"><div class="es">¿Habla inglés?</div><div class="ph">アブラ イングレス？</div><div class="ja">英語は話せますか？</div></div>
+      <div class="ph-card"><div class="es">¿Puede repetir, por favor?</div><div class="ph">プエデ レペティル ポル ファボル？</div><div class="ja">もう一度言ってもらえますか？</div></div>
+      <div class="ph-card"><div class="es">Más despacio, por favor.</div><div class="ph">マス デスパシオ ポル ファボル</div><div class="ja">もっとゆっくり話してください</div></div>
+    </div>
+  </div>
+
+  <div class="lnav">
+    <button class="btn-s" onclick="showPage('l2')">← 前へ</button>
+    <button class="btn-p" onclick="showPage('l4')">次: レストラン →</button>
+  </div>
+</div>
+
+<!-- ═══════════════ LESSON 4: レストラン ═══════════════ -->
+<div class="page" id="page-l4">
+  <div class="lhdr">
+    <div class="lhdr-eyebrow">レッスン 4</div>
+    <h2>レストランで食事</h2>
+  </div>
+
+  <div class="cs light">
+    <h3>入店・席の確保</h3>
+    <div class="phrases">
+      <div class="ph-card"><div class="es">Una mesa para uno, por favor.</div><div class="ph">ウナ メサ パラ ウノ ポル ファボル</div><div class="ja">1名用のテーブルをお願いします</div></div>
+      <div class="ph-card"><div class="es">Una mesa para dos, por favor.</div><div class="ph">ウナ メサ パラ ドス ポル ファボル</div><div class="ja">2名用のテーブルをお願いします</div></div>
+      <div class="ph-card"><div class="es">¿Tienen mesa?</div><div class="ph">ティエネン メサ？</div><div class="ja">席はありますか？</div></div>
+      <div class="ph-card"><div class="es">No tengo reserva.</div><div class="ph">ノ テンゴ レセルバ</div><div class="ja">予約していません</div></div>
+    </div>
+  </div>
+
+  <div class="cs dark">
+    <h3>メニューと注文</h3>
+    <div class="phrases">
+      <div class="ph-card"><div class="es">¿Me trae la carta, por favor?</div><div class="ph">メ トラエ ラ カルタ ポル ファボル？</div><div class="ja">メニューをいただけますか？</div></div>
+      <div class="ph-card"><div class="es">¿Qué recomienda?</div><div class="ph">ケ レコミエンダ？</div><div class="ja">おすすめは何ですか？</div></div>
+      <div class="ph-card"><div class="es">¿Cuál es el plato del día?</div><div class="ph">クアル エス エル プラト デル ディア？</div><div class="ja">本日のおすすめは？</div></div>
+      <div class="ph-card"><div class="es">Quiero esto.</div><div class="ph">キエロ エスト</div><div class="ja">これをください（指差しながら）</div></div>
+      <div class="ph-card"><div class="es">Para mí, una paella.</div><div class="ph">パラ ミ ウナ パエジャ</div><div class="ja">私にはパエリアを</div></div>
+      <div class="ph-card"><div class="es">Lo mismo, por favor.</div><div class="ph">ロ ミスモ ポル ファボル</div><div class="ja">同じものをお願いします</div></div>
+      <div class="ph-card"><div class="es">¿Qué lleva este plato?</div><div class="ph">ケ ジェバ エステ プラト？</div><div class="ja">この料理には何が入っていますか？</div></div>
+      <div class="ph-card"><div class="es">Soy alérgico/a a los mariscos.</div><div class="ph">ソイ アレルヒコ/カ ア ロス マリスコス</div><div class="ja">魚介類アレルギーです（男/女）</div></div>
+    </div>
+    <div class="tip">
+      <div class="tip-lbl">店員の呼び方</div>
+      <p>日本のような呼び鈴はありません。「¡Oiga!（オイガ）」または「¡Perdona!（ペルドナ）」と声をかけましょう。</p>
+    </div>
+  </div>
+
+  <div class="cs parch">
+    <h3>飲み物を注文する</h3>
+    <div class="phrases">
+      <div class="ph-card"><div class="es">Una cerveza, por favor.</div><div class="ph">ウナ セルベサ ポル ファボル</div><div class="ja">ビールを一杯ください</div></div>
+      <div class="ph-card"><div class="es">Un vino tinto, por favor.</div><div class="ph">ウン ビノ ティント ポル ファボル</div><div class="ja">赤ワインをください</div></div>
+      <div class="ph-card"><div class="es">Agua con gas / sin gas.</div><div class="ph">アグア コン ガス / シン ガス</div><div class="ja">炭酸水 / 普通の水</div></div>
+      <div class="ph-card"><div class="es">Otro más, por favor.</div><div class="ph">オトロ マス ポル ファボル</div><div class="ja">もう一杯お願いします</div></div>
+    </div>
+  </div>
+
+  <div class="cs dark">
+    <h3>会計</h3>
+    <div class="phrases">
+      <div class="ph-card"><div class="es">La cuenta, por favor.</div><div class="ph">ラ クエンタ ポル ファボル</div><div class="ja">お会計をお願いします ★最重要</div></div>
+      <div class="ph-card"><div class="es">¿Puedo pagar con tarjeta?</div><div class="ph">プエド パガル コン タルヘタ？</div><div class="ja">カードで払えますか？</div></div>
+      <div class="ph-card"><div class="es">Pago en efectivo.</div><div class="ph">パゴ エン エフェクティボ</div><div class="ja">現金で払います</div></div>
+      <div class="ph-card"><div class="es">¿Está incluido el servicio?</div><div class="ph">エスタ インクルイド エル セルビシオ？</div><div class="ja">サービス料は含まれていますか？</div></div>
+      <div class="ph-card"><div class="es">Quédese con el cambio.</div><div class="ph">ケデセ コン エル カンビオ</div><div class="ja">おつりはいいです（チップとして）</div></div>
+    </div>
+  </div>
+
+  <div class="cs light">
+    <h3>会話シナリオ：入店から会計まで</h3>
+    <div class="scenario">
+      <div class="scn-lbl">レストランにて</div>
+      <div class="dl">
+        <div class="dl-spk">あなた</div>
+        <div class="dl-es">Buenas tardes. Una mesa para uno, por favor.</div>
+        <div class="dl-ph">ブエナス タルデス。ウナ メサ パラ ウノ ポル ファボル</div>
+        <div class="dl-ja">こんにちは。1名用のテーブルをお願いします。</div>
+      </div>
+      <div class="dl">
+        <div class="dl-spk">店員</div>
+        <div class="dl-es">Por supuesto. Por aquí, por favor.</div>
+        <div class="dl-ph">ポル スプエスト。ポル アキ ポル ファボル</div>
+        <div class="dl-ja">もちろんです。こちらへどうぞ。</div>
+      </div>
+      <div class="dl">
+        <div class="dl-spk">あなた</div>
+        <div class="dl-es">¿Me trae la carta, por favor?</div>
+        <div class="dl-ph">メ トラエ ラ カルタ ポル ファボル？</div>
+        <div class="dl-ja">メニューをいただけますか？</div>
+      </div>
+      <div class="dl">
+        <div class="dl-spk">店員</div>
+        <div class="dl-es">¿Qué va a tomar?</div>
+        <div class="dl-ph">ケ バ ア トマル？</div>
+        <div class="dl-ja">ご注文はお決まりですか？</div>
+      </div>
+      <div class="dl">
+        <div class="dl-spk">あなた</div>
+        <div class="dl-es">Quiero esto y una cerveza, por favor.</div>
+        <div class="dl-ph">キエロ エスト イ ウナ セルベサ ポル ファボル</div>
+        <div class="dl-ja">これとビールをください。</div>
+      </div>
+      <div class="dl">
+        <div class="dl-spk">あなた（後で）</div>
+        <div class="dl-es">Perdona, ¡la cuenta, por favor!</div>
+        <div class="dl-ph">ペルドナ、ラ クエンタ ポル ファボル！</div>
+        <div class="dl-ja">すみません、お会計をお願いします！</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="lnav">
+    <button class="btn-s" onclick="showPage('l3')">← 前へ</button>
+    <button class="btn-p" onclick="showPage('l5')">次: スーパー →</button>
+  </div>
+</div>
+
+<!-- ═══════════════ LESSON 5: スーパー ═══════════════ -->
+<div class="page" id="page-l5">
+  <div class="lhdr">
+    <div class="lhdr-eyebrow">レッスン 5</div>
+    <h2>スーパーで買い物</h2>
+  </div>
+
+  <div class="cs light">
+    <h3>場所・商品を探す</h3>
+    <div class="phrases">
+      <div class="ph-card"><div class="es">¿Dónde está...?</div><div class="ph">ドンデ エスタ？</div><div class="ja">〜はどこですか？（基本フレーズ）</div></div>
+      <div class="ph-card"><div class="es">¿Dónde está el pan?</div><div class="ph">ドンデ エスタ エル パン？</div><div class="ja">パンはどこですか？</div></div>
+      <div class="ph-card"><div class="es">¿Dónde están los lácteos?</div><div class="ph">ドンデ エスタン ロス ラクテオス？</div><div class="ja">乳製品はどこですか？</div></div>
+      <div class="ph-card"><div class="es">¿Tiene...?</div><div class="ph">ティエネ？</div><div class="ja">〜はありますか？</div></div>
+      <div class="ph-card"><div class="es">Busco...</div><div class="ph">ブスコ</div><div class="ja">〜を探しています</div></div>
+    </div>
+  </div>
+
+  <div class="cs dark">
+    <h3>食料品の単語</h3>
+    <table class="vtbl">
+      <thead><tr><th>スペイン語</th><th>読み方</th><th>意味</th></tr></thead>
+      <tbody>
+        <tr><td>pan</td><td>パン</td><td>パン</td></tr>
+        <tr><td>leche</td><td>レチェ</td><td>牛乳</td></tr>
+        <tr><td>huevos</td><td>ウエボス</td><td>卵</td></tr>
+        <tr><td>queso</td><td>ケソ</td><td>チーズ</td></tr>
+        <tr><td>jamón</td><td>ハモン</td><td>ハム</td></tr>
+        <tr><td>carne</td><td>カルネ</td><td>肉</td></tr>
+        <tr><td>pollo</td><td>ポジョ</td><td>鶏肉</td></tr>
+        <tr><td>pescado</td><td>ペスカド</td><td>魚</td></tr>
+        <tr><td>fruta</td><td>フルタ</td><td>果物</td></tr>
+        <tr><td>verduras</td><td>ベルドゥラス</td><td>野菜</td></tr>
+        <tr><td>agua</td><td>アグア</td><td>水</td></tr>
+        <tr><td>cerveza</td><td>セルベサ</td><td>ビール</td></tr>
+        <tr><td>vino</td><td>ビノ</td><td>ワイン</td></tr>
+        <tr><td>aceite</td><td>アセイテ</td><td>油</td></tr>
+        <tr><td>sal</td><td>サル</td><td>塩</td></tr>
+        <tr><td>azúcar</td><td>アスカル</td><td>砂糖</td></tr>
+        <tr><td>arroz</td><td>アロス</td><td>米</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="cs parch">
+    <h3>量と単位</h3>
+    <div class="phrases">
+      <div class="ph-card"><div class="es">Un kilo de manzanas.</div><div class="ph">ウン キロ デ マンサナス</div><div class="ja">りんごを1キロ</div></div>
+      <div class="ph-card"><div class="es">Medio kilo de queso.</div><div class="ph">メディオ キロ デ ケソ</div><div class="ja">チーズを500g（半キロ）</div></div>
+      <div class="ph-card"><div class="es">Un litro de leche.</div><div class="ph">ウン リトロ デ レチェ</div><div class="ja">牛乳を1リットル</div></div>
+      <div class="ph-card"><div class="es">Una botella de vino.</div><div class="ph">ウナ ボテジャ デ ビノ</div><div class="ja">ワインを1本</div></div>
+      <div class="ph-card"><div class="es">Una lata de atún.</div><div class="ph">ウナ ラタ デ アトゥン</div><div class="ja">ツナの缶詰を1個</div></div>
+    </div>
+  </div>
+
+  <div class="cs dark">
+    <h3>レジでの会話</h3>
+    <div class="phrases">
+      <div class="ph-card"><div class="es">¿Cuánto es en total?</div><div class="ph">クアント エス エン トタル？</div><div class="ja">合計はいくらですか？</div></div>
+      <div class="ph-card"><div class="es">Una bolsa, por favor.</div><div class="ph">ウナ ボルサ ポル ファボル</div><div class="ja">袋を一つください</div></div>
+      <div class="ph-card"><div class="es">¿Puedo pagar con tarjeta?</div><div class="ph">プエド パガル コン タルヘタ？</div><div class="ja">カードで払えますか？</div></div>
+      <div class="ph-card"><div class="es">No, gracias.</div><div class="ph">ノ グラシアス</div><div class="ja">いいえ、結構です</div></div>
+      <div class="ph-card"><div class="es">¿Me puede dar el recibo?</div><div class="ph">メ プエデ ダル エル レシボ？</div><div class="ja">レシートをもらえますか？</div></div>
+    </div>
+    <div class="tip">
+      <div class="tip-lbl">スペインのスーパー事情</div>
+      <p>袋は有料（0.05〜0.10€）です。エコバッグを持参するのがおすすめ。Mercadona（メルカドーナ）が最も一般的なスーパーチェーンです。</p>
+    </div>
+  </div>
+
+  <div class="lnav">
+    <button class="btn-s" onclick="showPage('l4')">← 前へ</button>
+    <button class="btn-p" onclick="showPage('l6')">次: 道を聞く →</button>
+  </div>
+</div>
+
+<!-- ═══════════════ LESSON 6: 道を聞く ═══════════════ -->
+<div class="page" id="page-l6">
+  <div class="lhdr">
+    <div class="lhdr-eyebrow">レッスン 6</div>
+    <h2>道を聞く</h2>
+  </div>
+
+  <div class="cs light">
+    <h3>場所を尋ねる</h3>
+    <div class="phrases">
+      <div class="ph-card"><div class="es">¿Dónde está...?</div><div class="ph">ドンデ エスタ？</div><div class="ja">〜はどこですか？</div></div>
+      <div class="ph-card"><div class="es">¿Dónde está el metro?</div><div class="ph">ドンデ エスタ エル メトロ？</div><div class="ja">地下鉄はどこですか？</div></div>
+      <div class="ph-card"><div class="es">¿Dónde está el baño?</div><div class="ph">ドンデ エスタ エル バニョ？</div><div class="ja">トイレはどこですか？</div></div>
+      <div class="ph-card"><div class="es">¿Cómo llego a...?</div><div class="ph">コモ ジェゴ ア？</div><div class="ja">〜へはどうやって行きますか？</div></div>
+      <div class="ph-card"><div class="es">¿Está lejos?</div><div class="ph">エスタ レホス？</div><div class="ja">遠いですか？</div></div>
+      <div class="ph-card"><div class="es">¿A cuántos minutos?</div><div class="ph">ア クアントス ミヌトス？</div><div class="ja">何分くらいかかりますか？</div></div>
+      <div class="ph-card"><div class="es">¿Puede señalarme en el mapa?</div><div class="ph">プエデ セニャラルメ エン エル マパ？</div><div class="ja">地図で示してもらえますか？</div></div>
+    </div>
+  </div>
+
+  <div class="cs dark">
+    <h3>方向・位置を表す言葉</h3>
+    <div class="phrases">
+      <div class="ph-card"><div class="es">a la derecha</div><div class="ph">ア ラ デレチャ</div><div class="ja">右に</div></div>
+      <div class="ph-card"><div class="es">a la izquierda</div><div class="ph">ア ラ イスキエルダ</div><div class="ja">左に</div></div>
+      <div class="ph-card"><div class="es">todo recto</div><div class="ph">トド レクト</div><div class="ja">まっすぐ</div></div>
+      <div class="ph-card"><div class="es">gire a la derecha</div><div class="ph">ヒレ ア ラ デレチャ</div><div class="ja">右に曲がってください</div></div>
+      <div class="ph-card"><div class="es">gire a la izquierda</div><div class="ph">ヒレ ア ラ イスキエルダ</div><div class="ja">左に曲がってください</div></div>
+      <div class="ph-card"><div class="es">al final de la calle</div><div class="ph">アル フィナル デ ラ カジェ</div><div class="ja">通りの突き当たり</div></div>
+      <div class="ph-card"><div class="es">en la esquina</div><div class="ph">エン ラ エスキナ</div><div class="ja">角に</div></div>
+      <div class="ph-card"><div class="es">enfrente de / al lado de</div><div class="ph">エンフレンテ デ / アル ラド デ</div><div class="ja">〜の向かいに / 〜の隣に</div></div>
+      <div class="ph-card"><div class="es">cerca de / lejos de</div><div class="ph">セルカ デ / レホス デ</div><div class="ja">〜の近くに / 〜から遠い</div></div>
+    </div>
+  </div>
+
+  <div class="cs parch">
+    <h3>場所・建物の単語</h3>
+    <table class="vtbl">
+      <thead><tr><th>スペイン語</th><th>読み方</th><th>意味</th></tr></thead>
+      <tbody>
+        <tr><td>el metro</td><td>エル メトロ</td><td>地下鉄</td></tr>
+        <tr><td>la estación</td><td>ラ エスタシオン</td><td>駅</td></tr>
+        <tr><td>el aeropuerto</td><td>エル アエロプエルト</td><td>空港</td></tr>
+        <tr><td>el hotel</td><td>エル オテル</td><td>ホテル</td></tr>
+        <tr><td>el hospital</td><td>エル オスピタル</td><td>病院</td></tr>
+        <tr><td>la farmacia</td><td>ラ ファルマシア</td><td>薬局</td></tr>
+        <tr><td>el banco</td><td>エル バンコ</td><td>銀行</td></tr>
+        <tr><td>el cajero</td><td>エル カヘロ</td><td>ATM</td></tr>
+        <tr><td>la policía</td><td>ラ ポリシア</td><td>警察</td></tr>
+        <tr><td>el museo</td><td>エル ムセオ</td><td>美術館・博物館</td></tr>
+        <tr><td>la plaza</td><td>ラ プラサ</td><td>広場</td></tr>
+        <tr><td>el semáforo</td><td>エル セマフォロ</td><td>信号</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="cs light">
+    <h3>会話シナリオ：道を聞く</h3>
+    <div class="scenario">
+      <div class="scn-lbl">街頭にて</div>
+      <div class="dl">
+        <div class="dl-spk">あなた</div>
+        <div class="dl-es">Perdona, ¿dónde está el metro?</div>
+        <div class="dl-ph">ペルドナ、ドンデ エスタ エル メトロ？</div>
+        <div class="dl-ja">すみません、地下鉄はどこですか？</div>
+      </div>
+      <div class="dl">
+        <div class="dl-spk">地元の人</div>
+        <div class="dl-es">Siga todo recto y gire a la derecha en el semáforo.</div>
+        <div class="dl-ph">シガ トド レクト イ ヒレ ア ラ デレチャ エン エル セマフォロ</div>
+        <div class="dl-ja">まっすぐ行って、信号を右に曲がります。</div>
+      </div>
+      <div class="dl">
+        <div class="dl-spk">あなた</div>
+        <div class="dl-es">¿Está lejos?</div>
+        <div class="dl-ph">エスタ レホス？</div>
+        <div class="dl-ja">遠いですか？</div>
+      </div>
+      <div class="dl">
+        <div class="dl-spk">地元の人</div>
+        <div class="dl-es">No, está a cinco minutos a pie.</div>
+        <div class="dl-ph">ノ エスタ ア シンコ ミヌトス ア ピエ</div>
+        <div class="dl-ja">いいえ、歩いて5分です。</div>
+      </div>
+      <div class="dl">
+        <div class="dl-spk">あなた</div>
+        <div class="dl-es">Muchas gracias.</div>
+        <div class="dl-ph">ムーチャス グラシアス</div>
+        <div class="dl-ja">どうもありがとうございます。</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="lnav">
+    <button class="btn-s" onclick="showPage('l5')">← 前へ</button>
+    <button class="btn-p" onclick="showPage('l7')">次: バル →</button>
+  </div>
+</div>
+
+<!-- ═══════════════ LESSON 7: バル ═══════════════ -->
+<div class="page" id="page-l7">
+  <div class="lhdr">
+    <div class="lhdr-eyebrow">レッスン 7</div>
+    <h2>バルで一杯</h2>
+  </div>
+
+  <div class="cs light">
+    <h3>入店・注文する</h3>
+    <div class="phrases">
+      <div class="ph-card"><div class="es">Ponme una caña, por favor.</div><div class="ph">ポンメ ウナ カニャ ポル ファボル</div><div class="ja">生ビール（小）を一杯ください</div></div>
+      <div class="ph-card"><div class="es">Una cerveza, por favor.</div><div class="ph">ウナ セルベサ ポル ファボル</div><div class="ja">ビールを一杯ください</div></div>
+      <div class="ph-card"><div class="es">Un vino tinto / blanco / rosado.</div><div class="ph">ウン ビノ ティント / ブランコ / ロサド</div><div class="ja">赤 / 白 / ロゼワインを</div></div>
+      <div class="ph-card"><div class="es">Un gin-tonic, por favor.</div><div class="ph">ウン ヒン トニック ポル ファボル</div><div class="ja">ジントニックをください</div></div>
+      <div class="ph-card"><div class="es">Lo mismo otra vez.</div><div class="ph">ロ ミスモ オトラ ベス</div><div class="ja">同じものをもう一度</div></div>
+      <div class="ph-card"><div class="es">Otra ronda, por favor.</div><div class="ph">オトラ ロンダ ポル ファボル</div><div class="ja">もう一巡お願いします</div></div>
+    </div>
+  </div>
+
+  <div class="cs dark">
+    <h3>お酒の種類</h3>
+    <table class="vtbl">
+      <thead><tr><th>スペイン語</th><th>読み方</th><th>意味</th></tr></thead>
+      <tbody>
+        <tr><td>la caña</td><td>ラ カニャ</td><td>生ビール（小グラス）</td></tr>
+        <tr><td>el tubo</td><td>エル トゥボ</td><td>生ビール（長グラス）</td></tr>
+        <tr><td>la cerveza</td><td>ラ セルベサ</td><td>ビール</td></tr>
+        <tr><td>el vino tinto</td><td>エル ビノ ティント</td><td>赤ワイン</td></tr>
+        <tr><td>el vino blanco</td><td>エル ビノ ブランコ</td><td>白ワイン</td></tr>
+        <tr><td>el cava</td><td>エル カバ</td><td>スパークリングワイン</td></tr>
+        <tr><td>la sangría</td><td>ラ サングリア</td><td>サングリア</td></tr>
+        <tr><td>el tinto de verano</td><td>エル ティント デ ベラノ</td><td>赤ワインのソーダ割り</td></tr>
+        <tr><td>el gin-tonic</td><td>エル ヒン トニック</td><td>ジントニック</td></tr>
+        <tr><td>el clara</td><td>エル クララ</td><td>ビールのレモネード割り</td></tr>
+        <tr><td>la sidra</td><td>ラ シドラ</td><td>シードル</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="cs parch">
+    <h3>タパスを頼む</h3>
+    <div class="phrases">
+      <div class="ph-card"><div class="es">¿Qué tapas tienen?</div><div class="ph">ケ タパス ティエネン？</div><div class="ja">タパスは何がありますか？</div></div>
+      <div class="ph-card"><div class="es">Ponme unas tapas.</div><div class="ph">ポンメ ウナス タパス</div><div class="ja">タパスをください</div></div>
+      <div class="ph-card"><div class="es">Una tapa de tortilla.</div><div class="ph">ウナ タパ デ トルティジャ</div><div class="ja">スペインオムレツのタパスを</div></div>
+      <div class="ph-card"><div class="es">Una ración de jamón.</div><div class="ph">ウナ ラシオン デ ハモン</div><div class="ja">ハムの一皿（大）をください</div></div>
+      <div class="ph-card"><div class="es">Unos pinchos, por favor.</div><div class="ph">ウノス ピンチョス ポル ファボル</div><div class="ja">ピンチョスをください</div></div>
+      <div class="ph-card"><div class="es">¿Viene con tapa?</div><div class="ph">ビエネ コン タパ？</div><div class="ja">タパスはついてきますか？</div></div>
+    </div>
+    <div class="tip">
+      <div class="tip-lbl">タパス文化</div>
+      <p>スペインの多くのバル（特にグラナダ）では、ドリンクを注文すると<strong>タパスが無料</strong>でついてきます。地域によって異なるので確認してみましょう。</p>
+    </div>
+  </div>
+
+  <div class="cs dark">
+    <h3>乾杯・バルでの会話</h3>
+    <div class="phrases">
+      <div class="ph-card"><div class="es">¡Salud!</div><div class="ph">サルー！</div><div class="ja">乾杯！（最もよく使う）</div></div>
+      <div class="ph-card"><div class="es">¡Chin chin!</div><div class="ph">チン チン！</div><div class="ja">乾杯！（カジュアル）</div></div>
+      <div class="ph-card"><div class="es">Yo invito.</div><div class="ph">ジョ インビト</div><div class="ja">私がおごります</div></div>
+      <div class="ph-card"><div class="es">Esta ronda la pago yo.</div><div class="ph">エスタ ロンダ ラ パゴ ジョ</div><div class="ja">この一巡は私が払います</div></div>
+      <div class="ph-card"><div class="es">¡Que aproveche!</div><div class="ph">ケ アプロベチェ！</div><div class="ja">召し上がれ / いただきます</div></div>
+      <div class="ph-card"><div class="es">Estaba muy rico.</div><div class="ph">エスタバ ムイ リコ</div><div class="ja">とても美味しかったです</div></div>
+      <div class="ph-card"><div class="es">¿Cuál es la especialidad de la casa?</div><div class="ph">クアル エス ラ エスペシアリダ デ ラ カサ？</div><div class="ja">このお店の名物は何ですか？</div></div>
+      <div class="ph-card"><div class="es">¡Ha sido una noche genial!</div><div class="ph">ア シド ウナ ノチェ ヘニアル！</div><div class="ja">素晴らしい夜でした！</div></div>
+    </div>
+  </div>
+
+  <div class="cs light">
+    <h3>会話シナリオ：バルで一杯</h3>
+    <div class="scenario">
+      <div class="scn-lbl">バルにて</div>
+      <div class="dl">
+        <div class="dl-spk">あなた</div>
+        <div class="dl-es">Hola. Ponme una caña, por favor.</div>
+        <div class="dl-ph">オラ。ポンメ ウナ カニャ ポル ファボル</div>
+        <div class="dl-ja">こんにちは。生ビールをひとつください。</div>
+      </div>
+      <div class="dl">
+        <div class="dl-spk">バーテンダー</div>
+        <div class="dl-es">¡Marchando! ¿Quieres alguna tapa?</div>
+        <div class="dl-ph">マルチャンド！ キエレス アルグナ タパ？</div>
+        <div class="dl-ja">了解！タパスはいかがですか？</div>
+      </div>
+      <div class="dl">
+        <div class="dl-spk">あなた</div>
+        <div class="dl-es">Sí, una tapa de tortilla, por favor.</div>
+        <div class="dl-ph">シ、ウナ タパ デ トルティジャ ポル ファボル</div>
+        <div class="dl-ja">はい、スペインオムレツのタパスをください。</div>
+      </div>
+      <div class="dl">
+        <div class="dl-spk">あなた（後で）</div>
+        <div class="dl-es">Lo mismo otra vez, por favor.</div>
+        <div class="dl-ph">ロ ミスモ オトラ ベス ポル ファボル</div>
+        <div class="dl-ja">同じものをもう一度ください。</div>
+      </div>
+      <div class="dl">
+        <div class="dl-spk">あなた（帰る時）</div>
+        <div class="dl-es">La cuenta, por favor. ¡Todo muy bueno!</div>
+        <div class="dl-ph">ラ クエンタ ポル ファボル。トード ムイ ブエノ！</div>
+        <div class="dl-ja">お会計お願いします。全部とても美味しかった！</div>
+      </div>
+    </div>
+    <div class="tip" style="margin-top:20px">
+      <div class="tip-lbl">バル文化のルール</div>
+      <p>スペインのバルでは<strong>立ち飲みが普通</strong>です。カウンターの方が席より安いことも。バルは朝からオープンしており、朝食（コーヒーとパン）をとる場所でもあります。</p>
+    </div>
+  </div>
+
+  <div class="cs dark2">
+    <h3>これで旅の準備完了！</h3>
+    <p class="note">7つのレッスンをすべて学びました。あとは実践あるのみ。スペインで話しかけてみましょう。</p>
+    <div class="phrases">
+      <div class="ph-card"><div class="es">¡Buen viaje!</div><div class="ph">ブエン ビアヘ！</div><div class="ja">良い旅を！</div></div>
+      <div class="ph-card"><div class="es">¡Buena suerte!</div><div class="ph">ブエナ スエルテ！</div><div class="ja">頑張って！/ 幸運を！</div></div>
+    </div>
+  </div>
+
+  <div class="lnav">
+    <button class="btn-s" onclick="showPage('l6')">← 前へ</button>
+    <button class="btn-p" onclick="showPage('home')">ホームへ戻る</button>
+  </div>
+</div>
+
+</div><!-- /.app -->
+
+<script>
+const titles = {
+  home: '7レッスン',
+  l1: 'レッスン1 アルファベット',
+  l2: 'レッスン2 数字',
+  l3: 'レッスン3 挨拶',
+  l4: 'レッスン4 レストラン',
+  l5: 'レッスン5 スーパー',
+  l6: 'レッスン6 道を聞く',
+  l7: 'レッスン7 バル'
+};
+
+/* ── Text-to-Speech ── */
+let ttsActive = null;
+
+function speak(text, el) {
+  if (!window.speechSynthesis) return;
+  // 同じカードをもう一度タップしたら停止
+  if (ttsActive === el) {
+    window.speechSynthesis.cancel();
+    el.classList.remove('speaking');
+    ttsActive = null;
+    return;
+  }
+  // 再生中のものを止める
+  window.speechSynthesis.cancel();
+  if (ttsActive) { ttsActive.classList.remove('speaking'); }
+
+  const utt = new SpeechSynthesisUtterance(text);
+  utt.lang = 'es-ES';
+  utt.rate = 0.82;
+  utt.pitch = 1;
+  const done = () => {
+    el.classList.remove('speaking');
+    if (ttsActive === el) ttsActive = null;
+  };
+  utt.onend = done;
+  utt.onerror = done;
+
+  el.classList.add('speaking');
+  ttsActive = el;
+  // Android Chrome は cancel() 直後に speak() すると無音になるバグがある
+  setTimeout(() => window.speechSynthesis.speak(utt), 50);
+}
+
+function initTTS() {
+  // フレーズカード → スペイン語テキストを読み上げ
+  document.querySelectorAll('.ph-card').forEach(card => {
+    const es = card.querySelector('.es');
+    if (es) card.addEventListener('click', () => speak(es.textContent.trim(), card));
+  });
+
+  // アルファベットカード → 文字の名前を読み上げ
+  document.querySelectorAll('.a-card').forEach(card => {
+    const nm = card.querySelector('.nm');
+    if (nm) card.addEventListener('click', () => speak(nm.textContent.trim(), card));
+  });
+
+  // 数字カード → スペイン語の数字を読み上げ
+  document.querySelectorAll('.n-card').forEach(card => {
+    const es = card.querySelector('.ni-es');
+    if (es) card.addEventListener('click', () => speak(es.textContent.trim(), card));
+  });
+
+  // 単語テーブル → 最初のセル（スペイン語）を読み上げ
+  document.querySelectorAll('.vtbl tbody tr').forEach(row => {
+    const td = row.querySelector('td:first-child');
+    if (td) row.addEventListener('click', () => speak(td.textContent.trim(), row));
+  });
+
+  // 会話シナリオの各行 → スペイン語を読み上げ
+  document.querySelectorAll('.dl').forEach(dl => {
+    const es = dl.querySelector('.dl-es');
+    if (es) dl.addEventListener('click', () => speak(es.textContent.trim(), dl));
+  });
+}
+
+function showPage(id) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  const target = document.getElementById('page-' + id);
+  if (target) {
+    target.classList.add('active');
+    window.scrollTo(0, 0);
+  }
+  const backBtn = document.getElementById('nav-back');
+  const titleEl = document.getElementById('nav-title');
+  if (id === 'home') {
+    backBtn.classList.remove('visible');
+  } else {
+    backBtn.classList.add('visible');
+  }
+  if (titleEl) titleEl.textContent = titles[id] || '';
+  // ページ切替時に再生中を止める
+  if (ttsActive) {
+    window.speechSynthesis && window.speechSynthesis.cancel();
+    ttsActive.classList.remove('speaking');
+    ttsActive = null;
+  }
+}
+
+// 初期化
+initTTS();
+</script>
+</body>
+</html>
