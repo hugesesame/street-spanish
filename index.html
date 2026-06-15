@@ -1207,7 +1207,12 @@ function initTTS() {
   // フレーズカード → スペイン語テキストを読み上げ
   document.querySelectorAll('.ph-card').forEach(card => {
     const es = card.querySelector('.es');
-    if (es) card.addEventListener('click', () => speak(es.textContent.trim(), card));
+    if (es) {
+      const raw = es.textContent.trim();
+      // "A → ア" のような表示用テキストは矢印前の語だけ読む（Android TTSが記号・仮名を余分に読むため）
+      const text = raw.includes('→') ? raw.split('→')[0].trim() : raw;
+      card.addEventListener('click', () => speak(text, card));
+    }
   });
 
   // アルファベットカード → 文字の名前を読み上げ
